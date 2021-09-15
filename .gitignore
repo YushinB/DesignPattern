@@ -6,3 +6,5 @@
 /bin/*
 /include
 /include/*
+*.exe
+*.txt
