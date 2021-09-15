@@ -31,11 +31,21 @@ struct Journal
   }
 };
 
+struct PersistenceManager
+{
+    static void save(const Journal& j, const string& filename)
+    {
+        ofstream ofs(filename);
+        for (auto& s : j.entries)
+        ofs << s << endl;
+    }
+};
+
 int main()
 {
     Journal journal("Dear Diary");
     journal.add_entry("I ate a bug");
     journal.add_entry("I cried today");
-    journal.save_journal("test.txt");
+    PersistenceManager::save(journal, "test.txt");
     return 0;
 }
