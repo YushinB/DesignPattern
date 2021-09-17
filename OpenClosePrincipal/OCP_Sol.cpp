@@ -25,10 +25,19 @@ struct Product
 };
 
 template <typename T>
+struct AndSpecification;
+
+template <typename T>
 struct Specification
 {
     virtual ~Specification() = default;
     virtual bool is_satisfied(T *item) const = 0;
+
+    // new: breaks OCP if you add it post-hoc
+    //AndSpecification<T> operator&&(Specification<T> &&other)
+    //{
+    //    return AndSpecification<T>(*this, other);
+   // }
 };
 
 template <typename T>
@@ -103,9 +112,18 @@ int main()
 
     ColorSpecification green(Color::green);
     SizeSpecification size(Size::large);
+    for (auto &x : bf.filter(items, green))
+    {
+        cout << x->name << " is green\n";
+    }
+    for (auto &x : bf.filter(items, size))
+    {
+        cout << x->name << " is large\n";
+    }
 
-    AndSpecification<Product> colorAndSizeSpecification(green, size);
-    for (auto &x : bf.filter(items, colorAndSizeSpecification))
+    AndSpecification<Product> spec(green,size);
+    
+    for (auto &x : bf.filter(items, spec))
     {
         cout << x->name << " is green and large\n";
     }
